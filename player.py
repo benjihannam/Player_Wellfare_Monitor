@@ -7,7 +7,8 @@ class player():
 		self.first = first
 		self.last = last
 		self.pos = pos
-		self.minutes = 0
+		self.contact_minutes = 0
+		self.non_contact_minutes = 0
 		self.injuries = set([])
 
 	def __str__(self):
@@ -20,3 +21,5 @@ class player():
 
 
 		return main_str
+
+print "Any.do".lower() == "any.do"
