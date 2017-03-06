@@ -60,13 +60,14 @@ def add_contact_session(firebase, first, last, num, day=None, month=None, year=N
 	if day is None:
 		date = datetime.now().date()
 	else:
-		pass
+		date_string = str(year) + "-" + str(month) + "-" + str(day)
+		date = datetime.strptime(date_string, "%Y-%m-%d").date()
 
 	path = 'users/'+ first + "_" + last
 	result = firebase.get(path + "/contact", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 	#if the player is in the database 
 	if result is not None:
-		data = {'Day' : datetime.now().date(), 
+		data = {'Day' : date, 
 				'Number' : num
 				}
 		result.append(data)
@@ -84,11 +85,11 @@ def add_non_contact_session(firebase, first, last, num):
 		print "Player not found, might not be in the database yet."
 	pass
 
-add_player(firebase, "Benji", "Hannam", 7)
-add_injury(firebase, "Benji", "Hannam", "hip", "strain")
-add_injury(firebase, "Benji", "Hannam", "thigh", "strain")
+# add_player(firebase, "Benji", "Hannam", 7)
+# add_injury(firebase, "Benji", "Hannam", "hip", "strain")
+# add_injury(firebase, "Benji", "Hannam", "thigh", "strain")
 # delete_player(firebase, "Benji", "Hannam")
-add_contact_session(firebase, "Benji", "Hannam", 80)
+add_contact_session(firebase, "Benji", "Hannam", 80, "08", "03", "2017")
 
 def main():
 	dont_quit = True
