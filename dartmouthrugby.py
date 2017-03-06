@@ -29,14 +29,18 @@ def add_player(firebase, first, last, position, num=0):
 
 # add an injury recording to a player
 def add_injury(firebase, first, last, body_part, type_of):
+	# creat the json
 	data = {'body_part' : body_part, 
 			"type" : type_of, 
-			'logs' : {'Date' : datetime.now().date(), 'Notes' : "First Recording"}
+			'logs' : {'Date' : datetime.now().date(), 'Notes' : "First Recording"},
+			'is_active' : True
 			}
+	#the name of the injury
 	injury_name = body_part+ "_" + type_of
+	# put it in the db
 	firebase.put("/users/" + first + "_" + last + "/injuries/", injury_name, data)
 
-#add a note to an existing injury
+#add a log to an existing injury
 def add_injury_log(firebase, first, last, content):
 	pass
 
@@ -86,10 +90,10 @@ def add_non_contact_session(firebase, first, last, num):
 	pass
 
 # add_player(firebase, "Benji", "Hannam", 7)
-# add_injury(firebase, "Benji", "Hannam", "hip", "strain")
+add_injury(firebase, "Benji", "Hannam", "hip", "strain")
 # add_injury(firebase, "Benji", "Hannam", "thigh", "strain")
 # delete_player(firebase, "Benji", "Hannam")
-add_contact_session(firebase, "Benji", "Hannam", 80, "08", "03", "2017")
+# add_contact_session(firebase, "Benji", "Hannam", 80, "08", "03", "2017")
 
 def main():
 	dont_quit = True
