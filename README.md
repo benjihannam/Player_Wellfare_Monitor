@@ -75,7 +75,10 @@ The database is as of this moment planned to be structured as follows, the brace
 				- Date : (04-03-2017)
 				- tiredness :  (5)
 
-
+Notes:
+	
+	- All dates should be in the form of DD-MM-YYYY
+	- 'tiredness' is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD
 
 
 
