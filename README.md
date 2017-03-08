@@ -24,56 +24,36 @@ The database is as of this moment planned to be structured as follows, the brace
 
 		- position: (7)
 
-		- contact
+		- sessions
 
-			- log no. :(0)
-				- Date: (03-03-2017)
-				- Number : (80)
+			- type of session (contact)
 
-			- log no. : (1)
-				- Date : (04-03-2017)
-				- Number: (40)
+				- Date (03-03-2017) : Number of minutes (80)
 
-			- etc...
+			- type of session (non-contact)
 
-		- non-contact
-
-			- log no. : (0)
-				- Date: (02-03-2017)
-				- Number : (120) 
-
-			- log no. : (1)
-				- Date: (06-03-2017)
-				- Number : (120) 
+					- Date (02-03-2017) :  Number of minutes (120) 
 
 		- injuries
 
-			- (thing_strain)
+			- injury name (thing_strain)
+
 				- body_part : ('thigh')
 
 				- type : ('strain')
 
 				- is_current : (True)
 
-				- logs
+				-logs:
+						- Date (25-02-2017) : Notes ('Initial recording of injury.')
 
-					- log no. : (0)
-						- Date : (25-02-2017)
-						- Notes: ('Initial recording of injury. Occured at cutting sharply during evasion drill...etc...')
-
-					- log no. : (1)
-						- Date : (27-02-2017)
-						- Notes ('Strain has subsided considerably but still bothers the player. Will monitor over the coming weeks.')
+						- Date (27-02-2017) : Notes ('Strain has subsided considerably but still bothers the player. Will monitor over the coming weeks.')
 
 		- feedback
 
-			- log no. : (0)
-				- Date : (03-03-2017)
-				- tiredness :  (8)
+				- Date (03-03-2017) : tiredness (8)
 
-			- log no. : (1)
-				- Date : (04-03-2017)
-				- tiredness :  (5)
+				- Date (04-03-2017) : tiredness (5)
 
 Notes:
 	

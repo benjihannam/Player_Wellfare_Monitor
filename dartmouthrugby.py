@@ -8,7 +8,7 @@ firebase = firebase.FirebaseApplication('https://drfc-tracker.firebaseio.com', N
 
 #################################### Adding #############################################
 # adds a new player into the data base
-def add_player(firebase, first, last, position, num=0):
+def add_player(firebase, first, last, position):
 	#if the player is not in the data base
 	if get_player(firebase, first, last) is None:
 		# create the json
@@ -16,86 +16,122 @@ def add_player(firebase, first, last, position, num=0):
 				'last_name' : last, 
 				'position' : position,
 				'is_injured' : False,
-				'non_contact' : [{'Day' : datetime.now().date(), 'Number' : num}], 
-				"contact" : [{'Day' : datetime.now().date(), 'Number' : num}],
-				'injuries' : [{}],
-				'feedback' : [{}]
+				'non_contact' : [], 
+				"contact" : [],
+				'injuries' : [],
+				'feedback' : [],
+				'total_minutes' : 0
 				}
 		#add to the database
-		firebase.put("/users", first+"_"+last, data)
+		firebase.put("/players", first+"_"+last, data)
 		print "Added " + first + " " + last + " to the database."
 	else:
 		print "user already in the database"
 
 # add an injury recording to a player
-def add_injury(firebase, first, last, body_part, type_of):
-	# creat the json
-	data = {'body_part' : body_part, 
-			"type" : type_of, 
-			'logs' : {'Date' : datetime.now().date(), 'Notes' : "First Recording"},
-			'is_active' : True
-			}
-	#the name of the injury
-	injury_name = body_part+ "_" + type_of
-	# put it in the db
-	firebase.put("/users/" + first + "_" + last + "/injuries/", injury_name, data)
+def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, year=None):
+	if day is None:
+		date = datetime.now().date()
+	else:
+		date_string = str(year) + "-" + str(month) + "-" + str(day)
+		date = datetime.strptime(date_string, "%Y-%m-%d").date()
+	if get_player(firebase, first, last) is not None:
+		# creat the json
+		data = {'body_part' : body_part, 
+				"type" : type_of, 
+				'logs' : [],
+				'is_active' : True
+				}
+		#the name of the injury
+		injury_name = body_part+ "_" + type_of
+		# put it in the db
+		firebase.put("/players/" + first + "_" + last + "/injuries", injury_name, data)
+		firebase.put("/players/" + first + "_" + last + "/injuries/" + injury_name + "/logs", date, "First Recording")
+	else:
+		print "Player not found, might not be in the database yet."
 
 #add a log to an existing injury
 def add_injury_log(firebase, first, last, content):
 	pass
 
-#################################### Fetching #############################################
-# Gets the player from the database, returns None is they do not exist
-def get_player(firebase, first, last):
-	return firebase.get('/users/'+ first + "_" + last, None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
-
-#################################### Deleting #############################################
-# Deletes a player from the database
-def delete_player(firebase, first, last):
-	if get_player(firebase, first, last) is not None:
-		name = first + "_" + last
-		firebase.delete('/users/', name)
-		print "Deleted " + name
-	else:
-		print "Player does not exists anyway."
-
 # Adds contact minutes to the player
-def add_contact_session(firebase, first, last, num, day=None, month=None, year=None):
+def add_session(firebase, type_of, first, last, num, day=None, month=None, year=None):
+	type_of = "/"+ type_of
 	if day is None:
 		date = datetime.now().date()
 	else:
 		date_string = str(year) + "-" + str(month) + "-" + str(day)
 		date = datetime.strptime(date_string, "%Y-%m-%d").date()
 
-	path = 'users/'+ first + "_" + last
-	result = firebase.get(path + "/contact", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 	#if the player is in the database 
-	if result is not None:
-		data = {'Day' : date, 
-				'Number' : num
-				}
-		result.append(data)
-		firebase.put(path, "contact/", result)
+	if get_player(firebase, first, last) is not None:
+		firebase.put("/players/" + first + "_" + last + "/sessions" + type_of, date, num)
 	else:
 		print "Player not found, might not be in the database yet."
 
-# Adds non contact minutes to the player
-def add_non_contact_session(firebase, first, last, num):
-	path = 'users/'+ first + "_" + last
-	result = firebase.get(path + "/non_contact", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'}) 
-	if result is not None:
-		firebase.put(path, "non_contact", result + num)
+#################################### Fetching #############################################
+# Gets the player from the database, returns None is they do not exist
+def get_player(firebase, first, last):
+	return firebase.get('/players/'+ first + "_" + last, None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+
+def get_injuries(firebase, first, last):
+	return firebase.get('/players/'+ first + "_" + last +"/injuries", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+
+def get_contact_sessions(firebase, first, last):
+	return firebase.get('/players/'+ first + "_" + last +"/contact", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+
+#################################### Deleting #############################################
+# Deletes a player from the database
+def delete_player(firebase, first, last):
+	if get_player(firebase, first, last) is not None:
+		name = first + "_" + last
+		firebase.delete('/players/', name)
+		print "Deleted " + name
 	else:
-		print "Player not found, might not be in the database yet."
+		print "Player does not exists anyway."
+
+
+#################################### Custom Printing #############################################
+# A human readable print function for JSON database take from:
+# http://stackoverflow.com/questions/15275766/printing-dictionaries-json-human-readable
+def prettyPrint(dictionary, ident = '', braces=1):
+    for key, value in dictionary.iteritems():
+        if isinstance(value, dict):
+            print '%s%s%s%s' % (ident, braces*'[', key, braces*']') 
+            prettyPrint(value, ident+'  ', braces+1)
+        elif isinstance(value, list):
+            ndict=0
+            for v in value:
+                if isinstance(v, dict):
+                    ndict += 1
+            if ndict:
+                print '- %s%s' % (ident, key) 
+                for e in value:
+                    if isinstance(e, dict):
+                        prettyPrint(e, ident+'  ', braces+1)
+                    else: 
+                         print ident+'- %s : %s' %(key, e)
+            else:
+                print ident+'- %s : %s' %(key, value)
+        else:
+            print ident+'- %s : %s' %(key, value)
+
+def print_player(firebase, first, last):
+	json = get_player(firebase, first, last)
+	print "First : " + json['first_name']
+	print "Last : " + json['last_name']
+	print "Position : " + str(json['position'])
+
+
+#################################### main function for testing #############################################
+def main():
+	add_player(firebase, "Benji", "Hannam", 7)
+	add_injury(firebase, "Benji", "Hannam", "hip", "strain")
+	add_session(firebase, 'contact', "Benji", "Hannam", 60, "09", "03", "2017")
+	# prettyPrint(get_injuries(firebase,"Benji", "Hannam"))
+	# prettyPrint(get_player(firebase, "Benji", "Hannam"))
+	# print get_contact_sessions(firebase, "Benji", "Hannam")
+	print_player(firebase, "Benji", "Hannam")
 	pass
 
-# add_player(firebase, "Benji", "Hannam", 7)
-add_injury(firebase, "Benji", "Hannam", "hip", "strain")
-# add_injury(firebase, "Benji", "Hannam", "thigh", "strain")
-# delete_player(firebase, "Benji", "Hannam")
-# add_contact_session(firebase, "Benji", "Hannam", 80, "08", "03", "2017")
-
-def main():
-	dont_quit = True
-	while quit:
-		pass
+main()
