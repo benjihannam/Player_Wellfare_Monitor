@@ -41,8 +41,11 @@ def add_players_from_file(firebase, file):
 		for row in csv_f:
 			add_player(firebase, row[0], row[1], row[2])
 
+		return True
+
 	else:
 		print "File not found"
+		return False
 
 # add players by manually typing them in from stdin
 def add_players_from_input(firebase):
@@ -113,20 +116,28 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 	else:
 		print "Player not found, might not be in the database yet."
 
-def add_session_to_players(firebase, type, num_minutes, day=None, month=None, year=None):
+def add_session_to_players(firebase, type_of, num_minutes, day=None, month=None, year=None):
 	players = firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 	# for each player in the database
+	people_to_add = []
 	for name in sorted(players):
 		move_on = False
 		while not move_on:
 			answer = raw_input("Add minutes for " + name + "? (y/n): ")
 			if answer.lower() == "y":
-				add_session(firebase, type, players[name]['first_name'], players[name]['last_name'], num_minutes, day, month, year)
+				people_to_add.append(name)
 				move_on = True
 			elif answer.lower() == "n":
 				move_on = True
 			else:
 				print "Please enter only y or n."
+
+	print "Adding minutes into the database..."
+	for name in people_to_add:
+		print "Added minutes to " + name + "."
+		add_session(firebase, type_of, players[name]['first_name'], players[name]['last_name'], num_minutes, day, month, year)
+
+	print "Added minutes."
 
 #################################### Fetching #############################################
 # Gets the player from the database, returns None is they do not exist
@@ -191,7 +202,7 @@ def main():
 	# # prettyPrint(get_player(firebase, "Benji", "Hannam"))
 	# # print get_contact_sessions(firebase, "Benji", "Hannam")
 	# print_player(firebase, "Benji", "Hannam")
-	add_players_from_file(firebase, "test/player.csv")
+	# add_players_from_file(firebase, "test/player.csv")
 	# add_session_to_players(firebase, 'non_contact', 90)
 	# add_players_from_input(firebase)
 	pass
