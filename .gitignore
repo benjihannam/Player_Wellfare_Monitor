@@ -1,3 +1,4 @@
 idea_spec.txt
 *.pyc
 venv/*
+test/*

@@ -3,6 +3,8 @@
 from firebase import firebase
 import fileinput
 from datetime import *
+import csv
+import os
 firebase = firebase.FirebaseApplication('https://drfc-tracker.firebaseio.com', None)
 
 
@@ -28,15 +30,29 @@ def add_player(firebase, first, last, position):
 	else:
 		print "user already in the database"
 
+
+def add_players_from_file(firebase, file):
+	if os.path.exists(file):
+		f = open(file, 'rU')
+		csv_f = csv.reader(f)
+		for row in csv_f:
+			add_player(firebase, row[0], row[1], row[2])
+
+	else:
+		print "File not found"
+
 # add an injury recording to a player
 def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, year=None):
+	# if not date given, use today
 	if day is None:
 		date = datetime.now().date()
 	else:
 		date_string = str(year) + "-" + str(month) + "-" + str(day)
 		date = datetime.strptime(date_string, "%Y-%m-%d").date()
+
+	#if the player is in the database
 	if get_player(firebase, first, last) is not None:
-		# creat the json
+		# create the json
 		data = {'body_part' : body_part, 
 				"type" : type_of, 
 				'logs' : [],
@@ -57,6 +73,7 @@ def add_injury_log(firebase, first, last, content):
 # Adds contact minutes to the player
 def add_session(firebase, type_of, first, last, num, day=None, month=None, year=None):
 	type_of = "/"+ type_of
+	#if a day is given
 	if day is None:
 		date = datetime.now().date()
 	else:
@@ -125,13 +142,14 @@ def print_player(firebase, first, last):
 
 #################################### main function for testing #############################################
 def main():
-	add_player(firebase, "Benji", "Hannam", 7)
-	add_injury(firebase, "Benji", "Hannam", "hip", "strain")
-	add_session(firebase, 'contact', "Benji", "Hannam", 60, "09", "03", "2017")
-	# prettyPrint(get_injuries(firebase,"Benji", "Hannam"))
-	# prettyPrint(get_player(firebase, "Benji", "Hannam"))
-	# print get_contact_sessions(firebase, "Benji", "Hannam")
-	print_player(firebase, "Benji", "Hannam")
+	# add_player(firebase, "Benji", "Hannam", 7)
+	# add_injury(firebase, "Benji", "Hannam", "hip", "strain")
+	# add_session(firebase, 'contact', "Benji", "Hannam", 60, "09", "03", "2017")
+	# # prettyPrint(get_injuries(firebase,"Benji", "Hannam"))
+	# # prettyPrint(get_player(firebase, "Benji", "Hannam"))
+	# # print get_contact_sessions(firebase, "Benji", "Hannam")
+	# print_player(firebase, "Benji", "Hannam")
+	add_players_from_file(firebase, "test/player.csv")
 	pass
 
 main()
