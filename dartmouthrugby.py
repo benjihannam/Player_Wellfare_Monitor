@@ -112,7 +112,7 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 def add_session_to_players(firebase, type, num_minutes, day=None, month=None, year=None):
 	players = firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 	# for each player in the database
-	for name in players:
+	for name in sorted(players):
 		move_on = False
 		while not move_on:
 			answer = raw_input("Add minutes for " + name + "? (y/n): ")
@@ -188,8 +188,8 @@ def main():
 	# # print get_contact_sessions(firebase, "Benji", "Hannam")
 	# print_player(firebase, "Benji", "Hannam")
 	# add_players_from_file(firebase, "test/player.csv")
-	# add_session_to_players(firebase, 'non_contact', 90)
-	add_players_from_input(firebase)
+	add_session_to_players(firebase, 'non_contact', 90)
+	# add_players_from_input(firebase)
 	pass
 
 main()
