@@ -1,5 +1,10 @@
 from dartmouthrugby import *
+# firebase import
 from firebase import firebase
+
+# file system import
+from Tkinter import Tk
+from tkFileDialog import askopenfilename
 #the server
 firebase = firebase.FirebaseApplication('https://drfc-tracker.firebaseio.com', None)
 
@@ -37,7 +42,8 @@ def load_players():
 		exit = True
 		while exit:
 			# get the file location
-			file = raw_input("Please insert the file location, E.g 'import_files/players.csv' :")
+			Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+			file = askopenfilename() # show an "Open" dialog box and return the path to the selected file
 			# if it did not find the file
 			if not add_players_from_file(firebase, file):
 				# ask if they want to try again
@@ -81,3 +87,5 @@ def load_session():
 
 
 startup()
+
+

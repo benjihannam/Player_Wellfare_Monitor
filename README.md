@@ -85,7 +85,7 @@ Notes:
 
 There are two main ways to add players to the database as of this moment. They are:
 
-1. **Import from a .csv file.** A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). A recommended save location is inside the import_files folder within the directory. The format of the rows should be: [first] [last] [position]. E.g:
+1. **Import from a .csv file.** A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). The format of the rows should be: [first] [last] [position]. E.g:
 
 		     A      B        C
 		(1) John   Smith     7
