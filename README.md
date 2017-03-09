@@ -8,6 +8,26 @@
 
 The idea behind this library is to create an **easy to use** system for coaches and medical trainers on sports teams to use when **tracking the amount of wear and tear** that is being placed on their players' bodies. On top of this there is also the aim to be able to quickly and easily pull up relevant information regarding the injury status of the players, to enable the **coaches and trainers to make more informed decisions** about the fitness of their players.
 
+**Installation:**
+
+1. Download/clone the repository into the desired location
+2. using the command line cd into the repository
+3. (RECOMMENDED) install virtualenv, https://virtualenv.pypa.io/en/stable/ and create a virtual environment folder (I callend mine venv) inside the directory,
+   E.g Player_Welfare_Tracker/venv
+
+4. On the command line call:
+	
+		source venv/bin/activate
+   
+	This should set up the virtual environment which will allow you to install libraries without affecting your other files. A (venv) should appear on the command line before the path to show that it worked, E.g:
+
+   		(venv) [machine name]:Player_Wellfare_Monitor [username]$
+
+5. On the command line call:
+	
+		pip install -r requirements.txt
+	
+
 **Documentation**
 
 *Basic Database Structure:*
@@ -57,8 +77,8 @@ The database is as of this moment planned to be structured as follows, the brace
 
 Notes:
 	
-	- All dates should be in the form of DD-MM-YYYY
-	- 'tiredness' is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD
+1. All dates should be in the form of DD-MM-YYYY
+2. 'tiredness' is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD
 
 
 

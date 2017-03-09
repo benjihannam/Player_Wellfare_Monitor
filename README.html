@@ -1019,6 +1019,28 @@ body .markdown-body
 <p><strong>Last Updated:</strong> March 1st 2017</p>
 <p><strong>Introductory Notes:</strong></p>
 <p>The idea behind this library is to create an <strong>easy to use</strong> system for coaches and medical trainers on sports teams to use when <strong>tracking the amount of wear and tear</strong> that is being placed on their players&rsquo; bodies. On top of this there is also the aim to be able to quickly and easily pull up relevant information regarding the injury status of the players, to enable the <strong>coaches and trainers to make more informed decisions</strong> about the fitness of their players.</p>
+<p><strong>Installation:</strong></p>
+<ol>
+<li>Download/clone the repository into the desired location</li>
+<li>using the command line cd into the repository</li>
+<li>
+<p>(RECOMMENDED) install virtualenv, <a href="https://virtualenv.pypa.io/en/stable/">https://virtualenv.pypa.io/en/stable/</a> and create a virtual environment folder (I callend mine venv) inside the directory,<br />
+   E.g Player_Welfare_Tracker/venv</p>
+</li>
+<li>
+<p>On the command line call:</p>
+<pre><code>source venv/bin/activate
+</code></pre>
+<p>This should set up the virtual environment which will allow you to install libraries without affecting your other files. A (venv) should appear on the command line before the path to show that it worked, E.g:</p>
+<pre><code>(venv) [machine name]:Player_Wellfare_Monitor [username]$
+</code></pre>
+</li>
+<li>
+<p>On the command line call:</p>
+<pre><code>pip install -r requirements.txt
+</code></pre>
+</li>
+</ol>
 <p><strong>Documentation</strong></p>
 <p><em>Basic Database Structure:</em></p>
 <p>The database is as of this moment planned to be structured as follows, the braces () will indicate an example of each field:</p>
@@ -1032,58 +1054,39 @@ body .markdown-body
 
     - position: (7)
 
-    - contact
+    - sessions
 
-        - log no. :(0)
-            - Date: (03-03-2017)
-            - Number : (80)
+        - type of session (contact)
 
-        - log no. : (1)
-            - Date : (04-03-2017)
-            - Number: (40)
+            - Date (03-03-2017) : Number of minutes (80)
 
-        - etc...
+        - type of session (non-contact)
 
-    - non-contact
-
-        - log no. : (0)
-            - Date: (02-03-2017)
-            - Number : (120)
-
-        - log no. : (1)
-            - Date: (06-03-2017)
-            - Number : (120)
+                - Date (02-03-2017) :  Number of minutes (120)
 
     - injuries
 
-        - (thing_strain)
+        - injury name (thing_strain)
+
             - body_part : ('thigh')
 
             - type : ('strain')
 
             - is_current : (True)
 
-            - logs
+            -logs:
+                    - Date (25-02-2017) : Notes ('Initial recording of injury.')
 
-                - log no. : (0)
-                    - Date : (25-02-2017)
-                    - Notes: ('Initial recording of injury. Occured at cutting sharply during evasion drill...etc...')
-
-                - log no. : (1)
-                    - Date : (27-02-2017)
-                    - Notes ('Strain has subsided considerably but still bothers the player. Will monitor over the coming weeks.')
+                    - Date (27-02-2017) : Notes ('Strain has subsided considerably but still bothers the player. Will monitor over the coming weeks.')
 
     - feedback
 
-        - log no. : (0)
-            - Date : (03-03-2017)
-            - tiredness :  (8)
+            - Date (03-03-2017) : tiredness (8)
 
-        - log no. : (1)
-            - Date : (04-03-2017)
-            - tiredness :  (5)
+            - Date (04-03-2017) : tiredness (5)
 </code></pre>
 <p>Notes:</p>
-<pre><code>- All dates should be in the form of DD-MM-YYYY
-- 'tiredness' is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD
-</code></pre></article></body></html>
+<ol>
+<li>All dates should be in the form of DD-MM-YYYY</li>
+<li>&lsquo;tiredness&rsquo; is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD</li>
+</ol></article></body></html>

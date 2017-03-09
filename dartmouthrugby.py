@@ -41,6 +41,22 @@ def add_players_from_file(firebase, file):
 	else:
 		print "File not found"
 
+def add_players_from_input(firebase):
+	print "Please enter the information of the players you want to add."
+	exit = True
+	while exit:
+		first = raw_input("First Name: ")
+		last = raw_input("Last Name: ")
+		position = int(raw_input("Position (number): "))
+		add_player(firebase, first, last, position)
+		answer = raw_input("Add another player (y/n): ")
+		if answer.lower() == "y":
+				pass
+		elif answer.lower() == "n":
+			exit = False
+		else:
+			print "Please enter only y or n."
+
 # add an injury recording to a player
 def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, year=None):
 	# if not date given, use today
@@ -58,7 +74,7 @@ def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, 
 				'logs' : [],
 				'is_active' : True
 				}
-		#the name of the injury
+		# the name of the injury
 		injury_name = body_part+ "_" + type_of
 		# put it in the db
 		firebase.put("/players/" + first + "_" + last + "/injuries", injury_name, data)
@@ -70,10 +86,10 @@ def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, 
 def add_injury_log(firebase, first, last, content):
 	pass
 
-# Adds contact minutes to the player
+# Adds a session to the player
 def add_session(firebase, type_of, first, last, num, day=None, month=None, year=None):
 	type_of = "/"+ type_of
-	#if a day is given
+	#if a day is given set it on that date, otherwise set it as today
 	if day is None:
 		date = datetime.now().date()
 	else:
@@ -83,8 +99,30 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 	#if the player is in the database 
 	if get_player(firebase, first, last) is not None:
 		firebase.put("/players/" + first + "_" + last + "/sessions" + type_of, date, num)
+		# get the old total
+		num_minutes = firebase.get('/players/'+ first + "_" + last +"/total_minutes", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+		#add on the new minutes
+		new_total = num_minutes + num
+		# update the total
+		firebase.put("/players/" + first + "_" + last, "total_minutes", new_total)
+
 	else:
 		print "Player not found, might not be in the database yet."
+
+def add_session_to_players(firebase, type, num_minutes, day=None, month=None, year=None):
+	players = firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+	# for each player in the database
+	for name in players:
+		move_on = False
+		while not move_on:
+			answer = raw_input("Add minutes for " + name + "? (y/n): ")
+			if answer.lower() == "y":
+				add_session(firebase, type, players[name]['first_name'], players[name]['last_name'], num_minutes, day, month, year)
+				move_on = True
+			elif answer.lower() == "n":
+				move_on = True
+			else:
+				print "Please enter only y or n."
 
 #################################### Fetching #############################################
 # Gets the player from the database, returns None is they do not exist
@@ -94,8 +132,8 @@ def get_player(firebase, first, last):
 def get_injuries(firebase, first, last):
 	return firebase.get('/players/'+ first + "_" + last +"/injuries", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
-def get_contact_sessions(firebase, first, last):
-	return firebase.get('/players/'+ first + "_" + last +"/contact", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+def get_sessions(firebase, first, last):
+	return firebase.get('/players/'+ first + "_" + last +"/sessions", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
 #################################### Deleting #############################################
 # Deletes a player from the database
@@ -149,7 +187,9 @@ def main():
 	# # prettyPrint(get_player(firebase, "Benji", "Hannam"))
 	# # print get_contact_sessions(firebase, "Benji", "Hannam")
 	# print_player(firebase, "Benji", "Hannam")
-	add_players_from_file(firebase, "test/player.csv")
+	# add_players_from_file(firebase, "test/player.csv")
+	# add_session_to_players(firebase, 'non_contact', 90)
+	add_players_from_input(firebase)
 	pass
 
 main()
