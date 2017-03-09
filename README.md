@@ -1,4 +1,4 @@
-**Player Wellfare Tracker**
+# **Player Wellfare Tracker**
 
 **Author:** Benji Hannam
 
@@ -8,7 +8,7 @@
 
 The idea behind this library is to create an **easy to use** system for coaches and medical trainers on sports teams to use when **tracking the amount of wear and tear** that is being placed on their players' bodies. On top of this there is also the aim to be able to quickly and easily pull up relevant information regarding the injury status of the players, to enable the **coaches and trainers to make more informed decisions** about the fitness of their players.
 
-**Installation:**
+##**Installation:**
 
 1. Download/clone the repository into the desired location
 2. using the command line cd into the repository
@@ -28,9 +28,9 @@ The idea behind this library is to create an **easy to use** system for coaches 
 		pip install -r requirements.txt
 	
 
-**Documentation**
+## **Documentation**
 
-*Basic Database Structure:*
+####**Basic Database Structure:**
 	
 The database is as of this moment planned to be structured as follows, the braces () will indicate an example of each field:
 
@@ -79,6 +79,24 @@ Notes:
 	
 1. All dates should be in the form of DD-MM-YYYY
 2. 'tiredness' is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD
+
+
+####**Adding Players:**
+
+There are two main ways to add players to the database as of this moment. They are:
+
+1. **Import from a .csv file.** A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). A recommended save location is inside the import_files folder within the directory. The format of the rows should be: [first] [last] [position]. E.g:
+
+		     A      B        C
+		(1) John   Smith     7
+		(2) Owen   Farrel	 10
+		(3) Elliot Daily     13
+
+		Notes:
+			1.There should be no title row with column headers
+			2.The position should be given as a number not the name, E.g 7 instead of "Flanker".
+
+2. **Manually import via stdin.** 
 
 
 

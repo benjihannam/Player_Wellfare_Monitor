@@ -1014,12 +1014,12 @@ body .markdown-body
     page-break-after: avoid;
   }
 }
-</style><title>README</title></head><body><article class="markdown-body"><p><strong>Player Wellfare Tracker</strong></p>
+</style><title>README</title></head><body><article class="markdown-body"><h1 id="player-wellfare-tracker"><strong>Player Wellfare Tracker</strong></h1>
 <p><strong>Author:</strong> Benji Hannam</p>
 <p><strong>Last Updated:</strong> March 1st 2017</p>
 <p><strong>Introductory Notes:</strong></p>
 <p>The idea behind this library is to create an <strong>easy to use</strong> system for coaches and medical trainers on sports teams to use when <strong>tracking the amount of wear and tear</strong> that is being placed on their players&rsquo; bodies. On top of this there is also the aim to be able to quickly and easily pull up relevant information regarding the injury status of the players, to enable the <strong>coaches and trainers to make more informed decisions</strong> about the fitness of their players.</p>
-<p><strong>Installation:</strong></p>
+<h2 id="installation"><strong>Installation:</strong></h2>
 <ol>
 <li>Download/clone the repository into the desired location</li>
 <li>using the command line cd into the repository</li>
@@ -1041,8 +1041,8 @@ body .markdown-body
 </code></pre>
 </li>
 </ol>
-<p><strong>Documentation</strong></p>
-<p><em>Basic Database Structure:</em></p>
+<h2 id="documentation"><strong>Documentation</strong></h2>
+<h4 id="basic-database-structure"><strong>Basic Database Structure:</strong></h4>
 <p>The database is as of this moment planned to be structured as follows, the braces () will indicate an example of each field:</p>
 <pre><code>- User(Benji_Hannam)
 
@@ -1089,4 +1089,23 @@ body .markdown-body
 <ol>
 <li>All dates should be in the form of DD-MM-YYYY</li>
 <li>&lsquo;tiredness&rsquo; is a personal ranking out of 10 for how the player felt after a session on that date, how that is to be entered is TBD</li>
+</ol>
+<h4 id="adding-players"><strong>Adding Players:</strong></h4>
+<p>There are two main ways to add players to the database as of this moment. They are:</p>
+<ol>
+<li>
+<p><strong>Import from a .csv file.</strong> A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). A recommended save location is inside the import_files folder within the directory. The format of the rows should be: [first] [last] [position]. E.g:</p>
+<pre><code>     A      B        C
+(1) John   Smith     7
+(2) Owen   Farrel    10
+(3) Elliot Daily     13
+
+Notes:
+    1.There should be no title row with column headers
+    2.The position should be given as a number not the name, E.g 7 instead of "Flanker".
+</code></pre>
+</li>
+<li>
+<p><strong>Manually import via stdin.</strong> </p>
+</li>
 </ol></article></body></html>

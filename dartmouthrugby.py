@@ -28,19 +28,23 @@ def add_player(firebase, first, last, position):
 		firebase.put("/players", first+"_"+last, data)
 		print "Added " + first + " " + last + " to the database."
 	else:
-		print "user already in the database"
+		print first + " " + last + " is already in the database."
 
-
+# add from a .csv file that is stored at location path "file"
 def add_players_from_file(firebase, file):
+	# if the file exists
 	if os.path.exists(file):
+		# open it
 		f = open(file, 'rU')
 		csv_f = csv.reader(f)
+		# add the player
 		for row in csv_f:
 			add_player(firebase, row[0], row[1], row[2])
 
 	else:
 		print "File not found"
 
+# add players by manually typing them in from stdin
 def add_players_from_input(firebase):
 	print "Please enter the information of the players you want to add."
 	exit = True
@@ -187,8 +191,8 @@ def main():
 	# # prettyPrint(get_player(firebase, "Benji", "Hannam"))
 	# # print get_contact_sessions(firebase, "Benji", "Hannam")
 	# print_player(firebase, "Benji", "Hannam")
-	# add_players_from_file(firebase, "test/player.csv")
-	add_session_to_players(firebase, 'non_contact', 90)
+	add_players_from_file(firebase, "test/player.csv")
+	# add_session_to_players(firebase, 'non_contact', 90)
 	# add_players_from_input(firebase)
 	pass
 
