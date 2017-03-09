@@ -215,16 +215,4 @@ def print_player(firebase, first, last):
 
 #################################### main function for testing #############################################
 def main():
-	# add_player(firebase, "Benji", "Hannam", 7)
-	# add_injury(firebase, "Benji", "Hannam", "hip", "strain")
-	# add_session(firebase, 'contact', "Benji", "Hannam", 60, "09", "03", "2017")
-	# # prettyPrint(get_injuries(firebase,"Benji", "Hannam"))
-	# # prettyPrint(get_player(firebase, "Benji", "Hannam"))
-	# # print get_contact_sessions(firebase, "Benji", "Hannam")
-	# print_player(firebase, "Benji", "Hannam")
-	# add_players_from_file(firebase, "test/player.csv")
-	# add_session_to_players(firebase, 'non_contact', 90)
-	# add_players_from_input(firebase)
 	pass
-
-main()

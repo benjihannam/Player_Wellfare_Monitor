@@ -26,7 +26,11 @@ The idea behind this library is to create an **easy to use** system for coaches 
 5. On the command line call:
 	
 		pip install -r requirements.txt
-	
+
+##**Running:**
+Once the user is inside the directory and has activated the virtual environment (source venv/bin/activate) then the call to run the program is:
+
+		python interface.py
 
 ## **Documentation**
 
@@ -91,7 +95,7 @@ There are two main ways to add players to the database as of this moment. They a
 		     A      B        C
 		(1) John   Smith     7
 		(2) Owen   Farrel	 10
-		(3) Elliot Daily     13
+		(3) Elliot Daly      13
 
 		Notes:
 			1.There should be no title row with column headers
