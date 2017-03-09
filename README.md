@@ -85,7 +85,8 @@ Notes:
 
 There are two main ways to add players to the database as of this moment. They are:
 
-1. **Import from a .csv file.** A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). The format of the rows should be: [first] [last] [position]. E.g:
+1. **Import from a .csv file.** 
+	A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). The format of the rows should be: [first] [last] [position]. E.g:
 
 		     A      B        C
 		(1) John   Smith     7
@@ -96,7 +97,31 @@ There are two main ways to add players to the database as of this moment. They a
 			1.There should be no title row with column headers
 			2.The position should be given as a number not the name, E.g 7 instead of "Flanker".
 
+2. **Manually import via stdin.**
+	The user will be prompted to fill out fields for the first name, last name and position of the player as a number (E.g 7 instead of Flanker).
+
+
+
+####**Adding A Session:**
+
+When first trying to add a sessiom the user will be prompted to fill in what type of session (contact/non-contact/match) and will be given the chance to manually chose the date of the session. If the user opts to manually enter the date then they will be asked to fill in the day, month and year is the following formats: DD, MM, YYYY. E.g 01-03-2018. If they opt to not do it manually then the current date will be used.
+
+Once the preliminary information has been filled there will be two main options to add a session to the database as of this moment. They are:
+
+1. **Import from a .csv file.** 
+A .csv file can be created as an excel file except when it is saved ensure that is is saved in the .csv format (similar to saving a word doc as a pdf). The format of the rows should be: [first] [last] [minutes]. E.g:
+
+		     A      B        C
+		(1) John   Smith     80
+		(2) Owen   Farrel	 40
+		(3) Elliot Daily     60
+
+		Notes:
+			1.There should be no title row with column headers
+			2.The position should be given as a number not the name, E.g 7 instead of "Flanker".
+
 2. **Manually import via stdin.** 
+	The user will be prompted to enter the number of minutes that the session was and then will be asked for each player in the database whether they want to add the minutes to them or not.
 
 
 

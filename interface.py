@@ -15,13 +15,13 @@ def startup():
 		print "What would you like do to?"
 		print "1. Add players."
 		print "2. Add a session."
-		print "3. Quit"
+		print "99. Quit"
 		answer = raw_input("\nChoose a number: ")
 		if answer == "1":
 			load_players()
 		elif answer == "2":
 			load_session()
-		elif answer == "3":
+		elif answer == "99":
 			break
 		else:
 			print "Invalid input, please try again."
@@ -63,11 +63,12 @@ def load_players():
 	elif answer == "2":
 		add_players_from_input(firebase)
 
+	else:
+		return
 
 def load_session():
 	print "----------------------------------------"
 	type_of = raw_input("What type of session? (contact/non-contact/match): ")
-	num_minutes = int(raw_input("How long? (minutes): "))
 	day = None
 	month = None
 	year = None
@@ -75,15 +76,33 @@ def load_session():
 		reply = raw_input("Do you want to manuall set the date (default is today)? (y/n): ")
 		if reply.lower() == "y":
 			day = raw_input("Day (DD): ")
-			month = raw_input("Day (MM): ")
-			year = raw_input("Day (YYYY): ")
+			month = raw_input("Month (MM): ")
+			year = raw_input("Year (YYYY): ")
 			break
 		elif reply.lower() == "n":
 			break
 		else:
 			print "Please enter only y or n."
 
-	add_session_to_players(firebase, type_of, num_minutes, day, month, year)
+	# Determine how to load the session
+	print "How would you like to load the session:"
+	print "1. From file."
+	print "2. Manual Input."
+	print "3. Go back."
+	answer = raw_input("\nChoose a number: ")
+
+	if answer == "1":
+		# get the file location
+		Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+		file = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+		add_session_from_file(firebase, type_of, file, day, month, year)
+
+	elif answer == "2":
+		num_minutes = int(raw_input("How long? (minutes): "))
+		add_session_to_players(firebase, type_of, num_minutes, day, month, year)
+	else:
+		return
+
 
 
 startup()

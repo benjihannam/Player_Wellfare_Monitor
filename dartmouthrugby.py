@@ -41,6 +41,7 @@ def add_players_from_file(firebase, file):
 		for row in csv_f:
 			add_player(firebase, row[0], row[1], row[2])
 
+		f.close()
 		return True
 
 	else:
@@ -87,7 +88,7 @@ def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, 
 		firebase.put("/players/" + first + "_" + last + "/injuries", injury_name, data)
 		firebase.put("/players/" + first + "_" + last + "/injuries/" + injury_name + "/logs", date, "First Recording")
 	else:
-		print "Player not found, might not be in the database yet."
+		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
 
 #add a log to an existing injury
 def add_injury_log(firebase, first, last, content):
@@ -114,7 +115,7 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 		firebase.put("/players/" + first + "_" + last, "total_minutes", new_total)
 
 	else:
-		print "Player not found, might not be in the database yet."
+		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
 
 def add_session_to_players(firebase, type_of, num_minutes, day=None, month=None, year=None):
 	players = firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
@@ -123,7 +124,7 @@ def add_session_to_players(firebase, type_of, num_minutes, day=None, month=None,
 	for name in sorted(players):
 		move_on = False
 		while not move_on:
-			answer = raw_input("Add minutes for " + name + "? (y/n): ")
+			answer = raw_input("Add session for " + name + "? (y/n): ")
 			if answer.lower() == "y":
 				people_to_add.append(name)
 				move_on = True
@@ -132,12 +133,31 @@ def add_session_to_players(firebase, type_of, num_minutes, day=None, month=None,
 			else:
 				print "Please enter only y or n."
 
-	print "Adding minutes into the database..."
+	print "Adding session into the database..."
 	for name in people_to_add:
-		print "Added minutes to " + name + "."
+		print "Added session to " + name + "."
 		add_session(firebase, type_of, players[name]['first_name'], players[name]['last_name'], num_minutes, day, month, year)
 
-	print "Added minutes."
+	print "Added session."
+
+def add_session_from_file(firebase, type_of, file, day, month, year):
+	# if the file exists
+	if os.path.exists(file):
+		# open it
+		f = open(file, 'rU')
+		csv_f = csv.reader(f)
+		# add the session to each player
+		print "Adding session to players..."
+		for row in csv_f:
+			add_session(firebase, type_of, row[0], row[1], int(row[2]), day, month, year)
+
+		print "Added session"
+		f.close()
+		return True
+
+	else:
+		print "File not found"
+		return False
 
 #################################### Fetching #############################################
 # Gets the player from the database, returns None is they do not exist
