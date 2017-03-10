@@ -15,12 +15,15 @@ def startup():
 		print "What would you like do to?"
 		print "1. Add players."
 		print "2. Add a session."
+		print "3. Add an injury."
 		print "99. Quit"
 		answer = raw_input("\nChoose a number: ")
 		if answer == "1":
 			load_players()
 		elif answer == "2":
 			load_session()
+		elif answer == "3":
+			load_injury()
 		elif answer == "99":
 			break
 		else:
@@ -73,7 +76,7 @@ def load_session():
 	month = None
 	year = None
 	while True:
-		reply = raw_input("Do you want to manuall set the date (default is today)? (y/n): ")
+		reply = raw_input("Do you want to manually set the date (default is today)? (y/n): ")
 		if reply.lower() == "y":
 			day = raw_input("Day (DD): ")
 			month = raw_input("Month (MM): ")
@@ -103,8 +106,35 @@ def load_session():
 	else:
 		return
 
+def load_injury():
+	print "----------------------------------------"
+	# high level injury details
+	body_part = raw_input("What body part? (calf/thigh/ACL etc..): ")
+	type_of = raw_input("What type of injury? (break/concussion/tear etc..): ")
+	first = raw_input("First name of player?: ")
+	last = raw_input("Last name of player?: ")
+	# Get the date of the injury
+	day = None
+	month = None
+	year = None
+	# get the date
+	while True:
+		reply = raw_input("Do you want to manually set the date (default is today)? (y/n): ")
+		if reply.lower() == "y":
+			day = raw_input("Day (DD): ")
+			month = raw_input("Month (MM): ")
+			year = raw_input("Year (YYYY): ")
+			break
+		elif reply.lower() == "n":
+			break
+		else:
+			print "Please enter only y or n."
+
+	# get the comment
+	content = raw_input("Injury Notes: ")
+
+	add_injury(firebase, first, last, body_part, type_of, content, day, month, year)
+
 
 
 startup()
-
-

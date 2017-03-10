@@ -66,7 +66,7 @@ def add_players_from_input(firebase):
 			print "Please enter only y or n."
 
 # add an injury recording to a player
-def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, year=None):
+def add_injury(firebase, first, last, body_part, type_of, content, day=None, month=None, year=None):
 	# if not date given, use today
 	if day is None:
 		date = datetime.now().date()
@@ -86,13 +86,17 @@ def add_injury(firebase, first, last, body_part, type_of, day=None, month=None, 
 		injury_name = body_part+ "_" + type_of
 		# put it in the db
 		firebase.put("/players/" + first + "_" + last + "/injuries", injury_name, data)
-		firebase.put("/players/" + first + "_" + last + "/injuries/" + injury_name + "/logs", date, "First Recording")
+		firebase.put("/players/" + first + "_" + last + "/injuries/" + injury_name + "/logs", date, content)
+		print "Added " + injury_name + " to " + first + " " + last + "."
 	else:
 		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
 
 #add a log to an existing injury
 def add_injury_log(firebase, first, last, content):
-	pass
+	if get_player(firebase, first, last) is not None:
+		pass
+	else:
+		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
 
 # Adds a session to the player
 def add_session(firebase, type_of, first, last, num, day=None, month=None, year=None):
