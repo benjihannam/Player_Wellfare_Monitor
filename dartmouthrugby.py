@@ -174,6 +174,9 @@ def get_injuries(firebase, first, last):
 def get_sessions(firebase, first, last):
 	return firebase.get('/players/'+ first + "_" + last +"/sessions", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
+def get_players(firebase):
+	return firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+
 #################################### Deleting #############################################
 # Deletes a player from the database
 def delete_player(firebase, first, last):

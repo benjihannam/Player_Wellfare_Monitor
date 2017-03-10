@@ -139,31 +139,5 @@ def load_injury():
 
 
 
-# startup()
+startup()
 
-########################################### WIDGET TESTING ###########################################
-def test():
-	master = Tk()
-
-	e = Entry(master)
-	c = Entry(master)
-	e.pack()
-	c.pack()
-
-	e.focus_set()
-	c.focus_set()
-
-	def callback():
-	    print e.get()
-	    print c.get()
-	    master.destroy()
-
-	b = Button(master, text="get", width=10, command=callback)
-	b.pack()
-
-	mainloop()
-
-def home_page():
-	pass
-
-test()
