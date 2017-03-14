@@ -114,7 +114,7 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 		# get the old total
 		num_minutes = firebase.get('/players/'+ first + "_" + last +"/total_minutes", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 		#add on the new minutes
-		new_total = num_minutes + num
+		new_total = int(num_minutes) + int(num)
 		# update the total
 		firebase.put("/players/" + first + "_" + last, "total_minutes", new_total)
 

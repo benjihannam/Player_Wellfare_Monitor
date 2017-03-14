@@ -12,7 +12,8 @@ firebase = firebase.FirebaseApplication('https://drfc-tracker.firebaseio.com', N
 
 ########################################### WIDGET TESTING ###########################################
 def player_buttons(action, root):
-	root.destroy()
+	if root != None:
+		root.destroy()
 	master = Tk()
 	master.title("Player Select")
 
@@ -32,6 +33,7 @@ def player_buttons(action, root):
 	mainloop()
 
 def get_player_stats(name, root):
+	old_root = root
 	# root.destroy()
 	curr_root = Tk()
 	curr_root.title(name)
@@ -57,10 +59,8 @@ def get_player_stats(name, root):
 	minutes_label = Label(curr_root, text=minutes, anchor = "w")
 
 	# Edit Buttons
-	b1 = Button(root, text="Edit", command=lambda field="first_name": edit_field(field), bg= "blue")
-	b2 = Button(root, text="Edit", command=lambda field="last_name": edit_field(field), bg= "blue")
-	b3 = Button(root, text="Edit", command=lambda field="position": edit_field(field), bg= "blue")
-	b4 = Button(root, text="Edit", command=lambda field="num_minutes": edit_field(field), bg= "blue")
+	b3 = Button(curr_root, text="Edit", command=lambda field="position": edit_field(field, name, curr_root, old_root), bg= "blue")
+	b4 = Button(curr_root, text="Edit", command=lambda field="total_minutes": edit_field(field, name, curr_root, old_root), bg= "blue")
 
 	# Add to Grid
 
@@ -74,15 +74,51 @@ def get_player_stats(name, root):
 	position_label.grid(row = 2, column = 1, sticky = W)
 	minutes_label.grid(row = 3, column = 1, sticky = W)
 
-	b1.grid(row = 2, sticky=W, column = 2)
-	b2.grid(row = 3, sticky=W, column = 2)
-	b3.grid(row = 4, sticky=W, column = 2)
-	b4.grid(row = 5, sticky=W, column = 2)
+	b3.grid(row = 2, sticky=W, column = 2)
+	b4.grid(row = 3, sticky=W, column = 2)
 
-def edit_field(field, new_value):
+def edit_field(field, name, old_root, base_root):
+	base_root = base_root
+	old_root.destroy()
+	curr_root = Tk()
+	curr_root.title("Update Player")
+
+	string = "Enter a new " + field + ": "
+
+	label = Label(curr_root, text=string)
+	e = Entry(curr_root)
+	b = Button(curr_root, text="Update", command=lambda name=name: change_value(name, curr_root, field, e.get(), base_root), bg= "blue")
+
+	label.grid(row = 0)
+	e.grid(row = 0, column = 1)
+	b.grid(row = 0, column = 2)
 	pass
 
+def change_value(name, curr_root, field, value, base_root):
+	base_root.destroy()
+	path = '/players/'+ name
+	firebase.put(path,field, value)
+	# get_player_stats(name, curr_root)
+	player_buttons(get_player_stats, curr_root)
 
+def add_player_menu(root):
+	root.destroy()
+	curr_root = Tk()
+
+	# Field Labels
+	T0 = Label(curr_root, text="First: ", anchor = "w")
+	T1 = Label(curr_root, text="Last : ", anchor = "w")
+	T2 = Label(curr_root, text="Position: ", anchor = "w")
+	T3 = Label(curr_root, text="Total Minutes : ", anchor = "w")
+
+	first = Entry(curr_root)
+	last = Entry(curr_root)
+	position = Entry(curr_root)
+
+	T0.grid(row = 0, sticky = W)
+	T1.grid(row = 1, sticky = W)
+	T2.grid(row = 2, sticky = W)
+	T3.grid(row = 3, sticky = W)
 
 def home_page():
 	root = Tk()
