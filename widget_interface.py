@@ -11,8 +11,10 @@ from tkFileDialog import askopenfilename
 firebase = firebase.FirebaseApplication('https://drfc-tracker.firebaseio.com', None)
 
 ########################################### WIDGET TESTING ###########################################
-def player_buttons(action):
+def player_buttons(action, root):
+	root.destroy()
 	master = Tk()
+	master.title("Player Select")
 
 	#get all the player in the database
 	players = get_players(firebase)
@@ -21,7 +23,7 @@ def player_buttons(action):
 	x = 0
 	for name in sorted(players):
 		new_button = Button(master, text=name, command=lambda name=name: action(name, master), bg= "blue")
-		new_button.grid(row = x % 10, column = (x / 10))
+		new_button.grid(row = x % 10, column = (x / 10), sticky =W)
 		x += 1
 
 	exit_button = Button(master, text="Go back", command=lambda root=master: go_home(root), bg= "blue")
@@ -32,29 +34,70 @@ def player_buttons(action):
 def get_player_stats(name, root):
 	# root.destroy()
 	curr_root = Tk()
+	curr_root.title(name)
+
 	name_parts = name.split("_")
-	T0 = Text(curr_root, height=10, width=200)
-	T0.grid(row = 0)
 	player_string = get_player(firebase, name_parts[0], name_parts[1])
-	T0.insert(END, player_string)
+
+	first = player_string['first_name']
+	last = player_string['last_name']
+	position = str(player_string["position"])
+	minutes = str(player_string["total_minutes"])
+
+	# Field Labels
+	T0 = Label(curr_root, text="First: ", anchor = "w")
+	T1 = Label(curr_root, text="Last : ", anchor = "w")
+	T2 = Label(curr_root, text="Position: ", anchor = "w")
+	T3 = Label(curr_root, text="Total Minutes : ", anchor = "w")
+
+	# Field value
+	first_label = Label(curr_root, text=first, anchor = "w")
+	last_label = Label(curr_root, text=last, anchor = "w")
+	position_label = Label(curr_root, text=position, anchor = "w")
+	minutes_label = Label(curr_root, text=minutes, anchor = "w")
+
+	# Edit Buttons
+	b1 = Button(root, text="Edit", command=lambda field="first_name": edit_field(field), bg= "blue")
+	b2 = Button(root, text="Edit", command=lambda field="last_name": edit_field(field), bg= "blue")
+	b3 = Button(root, text="Edit", command=lambda field="position": edit_field(field), bg= "blue")
+	b4 = Button(root, text="Edit", command=lambda field="num_minutes": edit_field(field), bg= "blue")
+
+	# Add to Grid
+
+	T0.grid(row = 0, sticky = W)
+	T1.grid(row = 1, sticky = W)
+	T2.grid(row = 2, sticky = W)
+	T3.grid(row = 3, sticky = W)
+
+	first_label.grid(row = 0, column = 1, sticky = W)
+	last_label.grid(row = 1, column = 1, sticky = W)
+	position_label.grid(row = 2, column = 1, sticky = W)
+	minutes_label.grid(row = 3, column = 1, sticky = W)
+
+	b1.grid(row = 2, sticky=W, column = 2)
+	b2.grid(row = 3, sticky=W, column = 2)
+	b3.grid(row = 4, sticky=W, column = 2)
+	b4.grid(row = 5, sticky=W, column = 2)
+
+def edit_field(field, new_value):
+	pass
+
 
 
 def home_page():
 	root = Tk()
 	root.title("Player Tracker")
 	# root.geometry("500x400")
-	T0 = Text(root, height=1, width=70)
-	T1 = Text(root, height=1, width=70)
 
-	T0.grid(row = 0)
-	T1.grid(row = 1)
+	T0 = Label(root, text="Welcome to the Player Welfare Tracker (PWT).")
+	T1 = Label(root, text="What would you like do to?")
+	T0.grid(row = 0, sticky = W)
+	T1.grid(row = 1, sticky = W)
 
-	T0.insert(END, "Welcome to the Player Welfare Tracker (PWT).")
-	T1.insert(END, "What would you like do to?")
 	b1 = Button(root, text="1. Add players.", command=lambda name="test": action(name), bg= "blue")
 	b2 = Button(root, text="2. Add a session.", command=lambda name="test": action(name), bg= "blue")
 	b3 = Button(root, text="3. Add an injury.", command=lambda name="test": action(name), bg= "blue")
-	b4 = Button(root, text="4. Get the stats for a player.", command=lambda name=get_player_stats: player_buttons(name), bg= "blue")
+	b4 = Button(root, text="4. Get the stats for a player.", command=lambda name=get_player_stats: player_buttons(name, root), bg= "blue")
 
 	b1.grid(row = 2, sticky=W)
 	b2.grid(row = 3, sticky=W)
