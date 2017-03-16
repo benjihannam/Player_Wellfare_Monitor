@@ -28,7 +28,7 @@ def player_buttons(action, root):
 		x += 1
 
 	exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
-	exit_button.grid(row = 12, column = 0, columnspan = 2)
+	exit_button.grid(sticky=S+E, column = (x / 10))
 
 	mainloop()
 
@@ -41,15 +41,11 @@ def get_player_stats(name, root):
 
 	name_parts = name.split("_")
 	player_string = get_player(firebase, name_parts[0], name_parts[1])
-	injuries = get_injuries(firebase, name_parts[0], name_parts[1])
 
 	first = player_string['first_name']
 	last = player_string['last_name']
 	position = str(player_string["position"])
 	minutes = str(player_string["total_minutes"])
-	if injuries != None:
-		for injury in injuries:
-			print injury
 
 	# Field Labels
 	T0 = Label(curr_root, text="First: ", anchor = "w")
@@ -82,8 +78,28 @@ def get_player_stats(name, root):
 	b3.grid(row = 2, sticky=W, column = 2)
 	b4.grid(row = 3, sticky=W, column = 2)
 
+	free_row = 6
+	if 'injuries' in player_string:
+		injuries = player_string['injuries']
+		T4 = Label(curr_root, text="Injuries : ", anchor = "w")
+		T4.grid(row = 4, sticky = W)
+		for injury in injuries:
+			new_injury = Button(curr_root, text=injury, command=lambda injury=injury: get_injury(), bg= "blue")
+			new_injury.grid(row = free_row, columnspan=2)
+			free_row += 1 
+
+	if 'sessions' in player_string:
+		sessions = player_string['sessions']
+		T5 = Label(curr_root, text="Sessions : ", anchor = "w")
+		T5.grid(row = free_row, sticky = W)
+		free_row += 1
+		for session_type in sessions:
+			new_session = Button(curr_root, text=session_type, command=lambda session=session_type: get_injury(), bg= "blue")
+			new_session.grid(row = free_row, columnspan=2)
+			free_row += 1
+
 	exit_button = Button(curr_root, text="Close", command=lambda root=root: close_window(curr_root), bg= "blue")
-	exit_button.grid(sticky = S)
+	exit_button.grid(sticky=S+E, column = 2)
 
 	def edit_field(field, name, old_root, base_root):
 		base_root = base_root
@@ -161,7 +177,7 @@ def add_player_menu(root):
 	b1.grid(row = 10, column = 0, sticky = W)
 
 	exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
-	exit_button.grid(row = 12, column = 1) 
+	exit_button.grid(sticky=S+E, column = 2) 
 
 	def add_manual_players(players, root):
 		for i in range(len(players)):
@@ -223,7 +239,7 @@ def home_page():
 
 
 	exit_button = Button(root, text="Quit", command=lambda root=root: close_window(root), bg= "blue")
-	exit_button.grid(sticky = S)
+	exit_button.grid(sticky = S+E)
 
 	mainloop()
 
