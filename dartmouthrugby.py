@@ -16,7 +16,7 @@ def add_player(firebase, first, last, position):
 		# create the json
 		data = {'first_name' : first, 
 				'last_name' : last, 
-				'position' : position,
+				'position' : int(position),
 				'is_injured' : False,
 				'non_contact' : [], 
 				"contact" : [],
@@ -67,6 +67,12 @@ def add_players_from_input(firebase):
 
 # add an injury recording to a player
 def add_injury(firebase, first, last, body_part, type_of, content, day=None, month=None, year=None):
+
+	if last is not None:
+		name = first + "_" + last
+	else:
+		name = first
+
 	# if not date given, use today
 	if day is None:
 		date = datetime.now().date()
@@ -85,18 +91,22 @@ def add_injury(firebase, first, last, body_part, type_of, content, day=None, mon
 		# the name of the injury
 		injury_name = body_part+ "_" + type_of
 		# put it in the db
-		firebase.put("/players/" + first + "_" + last + "/injuries", injury_name, data)
-		firebase.put("/players/" + first + "_" + last + "/injuries/" + injury_name + "/logs", date, content)
-		print "Added " + injury_name + " to " + first + " " + last + "."
+		firebase.put("/players/" + name + "/injuries", injury_name, data)
+		firebase.put("/players/" + name + "/injuries/" + injury_name + "/logs", date, content)
+		print "Added " + injury_name + " to " + name + "."
 	else:
-		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
+		print "Player, " + name + ", not found, might not be in the database yet."
 
 #add a log to an existing injury
 def add_injury_log(firebase, first, last, content):
+	if last is not None:
+		name = first + "_" + last
+	else:
+		name = first
 	if get_player(firebase, first, last) is not None:
 		pass
 	else:
-		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
+		print "Player, " + name + ", not found, might not be in the database yet."
 
 # Adds a session to the player
 def add_session(firebase, type_of, first, last, num, day=None, month=None, year=None):
@@ -108,18 +118,23 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 		date_string = str(year) + "-" + str(month) + "-" + str(day)
 		date = datetime.strptime(date_string, "%Y-%m-%d").date()
 
+	if last is not None:
+		name = first + "_" + last
+	else:
+		name = first
+
 	#if the player is in the database 
 	if get_player(firebase, first, last) is not None:
-		firebase.put("/players/" + first + "_" + last + "/sessions" + type_of, date, num)
+		firebase.put("/players/" + name + "/sessions" + type_of, date, num)
 		# get the old total
-		num_minutes = firebase.get('/players/'+ first + "_" + last +"/total_minutes", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+		num_minutes = firebase.get('/players/'+ name +"/total_minutes", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 		#add on the new minutes
 		new_total = int(num_minutes) + int(num)
 		# update the total
-		firebase.put("/players/" + first + "_" + last, "total_minutes", new_total)
+		firebase.put("/players/" + name, "total_minutes", new_total)
 
 	else:
-		print "Player, " + first + "_" + last + ", not found, might not be in the database yet."
+		print "Player, " + name + ", not found, might not be in the database yet."
 
 def add_session_to_players(firebase, type_of, num_minutes, day=None, month=None, year=None):
 	players = firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
@@ -165,23 +180,38 @@ def add_session_from_file(firebase, type_of, file, day, month, year):
 
 #################################### Fetching #############################################
 # Gets the player from the database, returns None is they do not exist
-def get_player(firebase, first, last):
-	return firebase.get('/players/'+ first + "_" + last, None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+def get_player(firebase, first, last=None):
+	if last is not None:
+		name = first + "_" + last
+	else:
+		name = first
+	return firebase.get('/players/'+ name, None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
-def get_injuries(firebase, first, last):
-	return firebase.get('/players/'+ first + "_" + last +"/injuries", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+def get_injuries(firebase, first, last=None):
+	if last is not None:
+		name = first + "_" + last
+	else:
+		name = first
+	return firebase.get('/players/'+ name +"/injuries", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
-def get_sessions(firebase, first, last):
-	return firebase.get('/players/'+ first + "_" + last +"/sessions", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
+def get_sessions(firebase, first, last=None):
+	if last is not None:
+		name = first + "_" + last
+	else:
+		name = first
+	return firebase.get('/players/'+ name +"/sessions", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
 def get_players(firebase):
 	return firebase.get("/players", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 
 #################################### Deleting #############################################
 # Deletes a player from the database
-def delete_player(firebase, first, last):
+def delete_player(firebase, first, last=None):
 	if get_player(firebase, first, last) is not None:
-		name = first + "_" + last
+		if last is not None:
+			name = first + "_" + last
+		else:
+			name = first
 		firebase.delete('/players/', name)
 		print "Deleted " + name
 	else:
