@@ -125,13 +125,14 @@ def add_session(firebase, type_of, first, last, num, day=None, month=None, year=
 
 	#if the player is in the database 
 	if get_player(firebase, first, last) is not None:
-		firebase.put("/players/" + name + "/sessions" + type_of, date, num)
+		firebase.put("/players/" + name + "/sessions" + type_of, date, int(num))
 		# get the old total
 		num_minutes = firebase.get('/players/'+ name +"/total_minutes", None, params={'print': 'pretty'}, headers={'X_FANCY_HEADER': 'very fancy'})
 		#add on the new minutes
 		new_total = int(num_minutes) + int(num)
 		# update the total
 		firebase.put("/players/" + name, "total_minutes", new_total)
+		print "Added Session to " + name
 
 	else:
 		print "Player, " + name + ", not found, might not be in the database yet."

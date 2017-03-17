@@ -214,6 +214,133 @@ def delete_players_widget(name, root):
 		player_buttons(delete_players_widget, curr_root)
 	pass
 ##############################################################################################################################
+def add_session_menu(root):
+	root.destroy()
+	curr_root = Tk()
+	curr_root.title("Add Session")
+
+	# Get the date of the session
+	date_label = Label(curr_root, text="Enter Date of session(DD/MM/YYYY), if left empty will default to today: ")
+	date_label.grid(row = 0, sticky=W, columnspan = 3)
+	day = Entry(curr_root)
+	month = Entry(curr_root)
+	year = Entry(curr_root)
+	day.grid(row = 1, column = 0, sticky = W)
+	month.grid(row = 1, column = 1, sticky = W)
+	year.grid(row = 1, column = 2, sticky = W)
+
+	# Get the type of the session
+	type_label = Label(curr_root, text="Enter type of session(contact, non-contact, match): ")
+	type_label.grid(row = 2, sticky=W, columnspan = 3)
+	type_entry = Entry(curr_root)
+	type_entry.insert(0, "")
+	type_entry.grid(row = 3, column = 0)
+
+	beginning_row = 4
+	### Adding manually
+
+	# Field Labels
+	T0 = Label(curr_root, text="First: ", anchor = "w")
+	T1 = Label(curr_root, text="Last: ", anchor = "w")
+	T2 = Label(curr_root, text="Num Minutes: ", anchor = "w")
+
+	T0.grid(row = beginning_row, column = 0, sticky = W)
+	T1.grid(row = beginning_row, column = 1, sticky = W)
+	T2.grid(row = beginning_row, column = 2, sticky = W)
+
+	players = []
+	# Entry fields
+	for i in range(5):	
+
+		first = Entry(curr_root)
+		last = Entry(curr_root)
+		minutes = Entry(curr_root)
+
+		first.grid(row = i+beginning_row + 1, column = 0, sticky=W)
+		last.grid(row = i+beginning_row + 1, column = 1, sticky=W)
+		minutes.grid(row = i+beginning_row + 1, column = 2, sticky=W)
+
+		new_player = [first, last, minutes]
+		players.append(new_player)
+
+	# Add Button
+	b = Button(curr_root, text="Add", command=lambda players=players: add_manual_sessions(players, curr_root), bg= "blue")
+	b.grid(row = 7 + beginning_row, column = 0, sticky = W)
+
+	#Error label
+	error_label1 = Label(curr_root, text="")
+	error_label1.grid(row = 6+beginning_row)
+
+
+	### Add from file
+	or_label = Label(curr_root, text="Or add from a file:")
+	or_label.grid(row = 8+beginning_row, column = 0, sticky = W)
+
+	file_entry = Entry(curr_root)
+	file_entry.grid(row = 10+beginning_row, column = 0, sticky = W)
+	choose_button = Button(curr_root, text="Choose File", command=lambda file_entry=file_entry: file_path(file_entry), bg= "blue")
+	choose_button.grid(row = 9+beginning_row, column = 0, sticky = W)
+
+	# Get the file path as a string
+	def file_path(file_entry):
+		file_name = askopenfilename()
+		file_entry.insert(0, file_name)
+
+	# Add button
+	b1 = Button(curr_root, text="Add", command=lambda file_entry=file_entry: add_file_session(file_entry, curr_root), bg= "blue")
+	b1.grid(row = 13+ beginning_row, column = 0, sticky = W)
+
+	# Second error label
+	error_label2 = Label(curr_root, text="")
+	error_label2.grid(row = 12+beginning_row)
+
+	#quit button
+	exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
+	exit_button.grid(sticky=S+E, column = 2) 
+
+	def add_manual_sessions(players, root):
+		if type_entry.get() == "":
+			error_label1.config(text="Error: no session type specified.")
+		else:
+			error_label1.config(text="Adding in players.")
+			for i in range(len(players)):
+				if players[i][0].get() != "" and players[i][1].get() != "" and players[i][2].get() != "":
+					day_str = None
+					month_str = None
+					year_str = None
+					if day.get() != "":
+						day_str = day.get()
+					if month.get() != "":
+						month_str = month.get()
+					if year.get() != "":
+						year_str = year.get()
+					add_session(firebase, type_entry.get(), players[i][0].get(), players[i][1].get(), players[i][2].get(), day_str, month_str, year_str)
+					players[i][0].delete(0, END)
+					players[i][1].delete(0, END)
+					players[i][2].delete(0, END)
+			
+			root.destroy()
+			home_page()
+
+	def add_file_session(file_entry, root):
+		if type_entry.get() == "":
+			error_label2.config(text="Error: no session type specified.")
+		else:
+			error_label2.config(text="Adding from file.")
+			day_str = None
+			month_str = None
+			year_str = None
+			if day.get() != "":
+				day_str = day.get()
+			if month.get() != "":
+				month_str = month.get()
+			if year.get() != "":
+				year_str = year.get()
+			add_session_from_file(firebase, type_entry.get(), file_entry.get(), day_str, month_str, year_str)
+			file_entry.delete(0, END)
+			root.destroy()
+			home_page()
+##############################################################################################################################
 
 def home_page():
 	root = Tk()
@@ -226,8 +353,8 @@ def home_page():
 	T1.grid(row = 1, sticky = W)
 
 	b1 = Button(root, text="1. Add players.", command=lambda name="test": add_player_menu(root), bg= "blue")
-	b2 = Button(root, text="2. Add a session.", command=lambda name="test": action(name), bg= "blue")
-	b3 = Button(root, text="3. Add an injury.", command=lambda name="test": action(name), bg= "blue")
+	b2 = Button(root, text="2. Add a session.", command=lambda name="test": add_session_menu(root), bg= "blue")
+	b3 = Button(root, text="3. Add an injury.", command=lambda name="test": player_buttons(name), bg= "blue")
 	b4 = Button(root, text="4. View/Edit Player.", command=lambda action=get_player_stats: player_buttons(action, root), bg= "blue")
 	b5 = Button(root, text="5. Delete Player.", command=lambda action=delete_players_widget: player_buttons(action, root), bg= "blue")
 

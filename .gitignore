@@ -2,3 +2,4 @@ idea_spec.txt
 *.pyc
 venv/*
 test/*
+import_files/*
