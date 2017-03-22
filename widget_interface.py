@@ -341,6 +341,83 @@ def add_session_menu(root):
 			root.destroy()
 			home_page()
 ##############################################################################################################################
+def match_timer_setup(root):
+	root.destroy()
+	curr_root = Tk()
+	curr_root.title("Set Up the Players")
+	pos_label = Label(curr_root, text="Pos:")
+	pos_label.grid(row=0, sticky = W)
+	main_first_label = Label(curr_root, text="First:")
+	main_first_label.grid(row=0, column = 1, sticky = W)
+	main_last_label = Label(curr_root, text="Last:")
+	main_last_label.grid(row=0, column = 2, sticky = W)
+
+	first_names = []
+	last_names = []
+	position_labels = []
+	for i in range(23):
+		position_label = Label(curr_root, text=str(i+1) + ".")
+		first_entry = Entry(curr_root)
+		first_names.append(first_entry)
+		last_entry = Entry(curr_root)
+		last_names.append(last_entry)
+		position_label.grid(row=1+i)
+		position_labels.append(position_label)
+		first_entry.grid(row=1+i, column = 1)
+		last_entry.grid(row=1+i, column = 2)
+
+		first_entry.insert(0, "test")
+		last_entry.insert(0, "test")
+
+	# Add button
+	b1 = Button(curr_root, text="Add", command=lambda file_entry=last_entry: match_timer(), bg= "blue")
+	b1.grid(row = i+2, column = 1, columnspan = 2)
+
+	#quit button
+	exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
+	exit_button.grid(sticky=S+E, column = 2) 
+
+	def match_timer():
+		timer_labels = []
+		for i in range(len(first_names)):
+			if first_names[i].get() != "":
+				first_label = Label(curr_root, text=first_names[i].get())
+				last_label = Label(curr_root, text = last_names[i].get())
+				first_label.grid(row = 1+i, column = 1, sticky = W)
+				last_label.grid(row = 1+i, column = 2, sticky = W)
+				player_timer = Label(curr_root, text = "00:00:00")
+				player_timer.grid(row = 1+i, column = 5, sticky = E)
+				pause_button = Button(curr_root, text = "pause", command=lambda timer=player_timer: pause_timer(timer), bg= "blue")
+				pause_button.grid(row = 1+i, column = 3, sticky = W)
+				resume_button = Button(curr_root, text = "resume", command=lambda timer=player_timer: resume_timer(timer), bg= "blue")
+				resume_button.grid(row = 1+i, column = 4, sticky = W)
+
+			else:
+				position_labels[i].destroy()
+			first_names[i].destroy()
+			last_names[i].destroy()
+
+		b1.destroy()
+		pos_label.destroy()
+		main_last_label.destroy()
+		main_first_label.destroy()
+
+		start_button = Button(curr_root, text="Start")
+		start_button.grid(row = i + 2)
+
+		exit_button.destroy()
+		#quit button
+		new_exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
+		new_exit_button.grid(sticky=S+E, column = 5) 
+
+	def pause_timer():
+		pass
+
+	def resume_timer()
+		pass
+
+
+##############################################################################################################################
 
 def home_page():
 	root = Tk()
@@ -357,12 +434,14 @@ def home_page():
 	b3 = Button(root, text="3. Add an injury.", command=lambda name="test": player_buttons(name), bg= "blue")
 	b4 = Button(root, text="4. View/Edit Player.", command=lambda action=get_player_stats: player_buttons(action, root), bg= "blue")
 	b5 = Button(root, text="5. Delete Player.", command=lambda action=delete_players_widget: player_buttons(action, root), bg= "blue")
+	b6 = Button(root, text="6. Start a match timer.", command=lambda action=delete_players_widget: match_timer_setup(root), bg= "blue")
 
 	b1.grid(row = 2, sticky=W)
 	b2.grid(row = 3, sticky=W)
 	b3.grid(row = 4, sticky=W)
 	b4.grid(row = 5, sticky=W)
 	b5.grid(row = 6, sticky=W)
+	b6.grid(row = 7, sticky=W)
 
 
 	exit_button = Button(root, text="Quit", command=lambda root=root: close_window(root), bg= "blue")
