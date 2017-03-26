@@ -7,6 +7,8 @@ from firebase import firebase
 # file system import
 from Tkinter import *
 from tkFileDialog import askopenfilename
+import time
+import csv
 #the server
 firebase = firebase.FirebaseApplication('https://drfc-tracker.firebaseio.com', None)
 
@@ -342,6 +344,7 @@ def add_session_menu(root):
 			home_page()
 ##############################################################################################################################
 def match_timer_setup(root):
+	running = True
 	root.destroy()
 	curr_root = Tk()
 	curr_root.title("Set Up the Players")
@@ -366,55 +369,130 @@ def match_timer_setup(root):
 		first_entry.grid(row=1+i, column = 1)
 		last_entry.grid(row=1+i, column = 2)
 
-		first_entry.insert(0, "test")
-		last_entry.insert(0, "test")
+		first_entry.insert(0, "Default")
+		last_entry.insert(0, "Default")
 
 	# Add button
-	b1 = Button(curr_root, text="Add", command=lambda file_entry=last_entry: match_timer(), bg= "blue")
+	b1 = Button(curr_root, text="Start Timer", command=lambda file_entry=last_entry: match_timer(), bg= "blue")
 	b1.grid(row = i+2, column = 1, columnspan = 2)
 
 	#quit button
 	exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
 	exit_button.grid(sticky=S+E, column = 2) 
 
+	# The page for starting the match timer
 	def match_timer():
-		timer_labels = []
+
+		def stop_timer(position, timer_list, label_list, start_timer):
+			seconds = (datetime.now() - timer_list[position]).seconds % 60
+			minutes = (datetime.now() - timer_list[position]).seconds / 60
+			time_string = str(minutes) + " mins " + str(seconds) + " secs."
+			label_list[position].config(text = time_string)
+
+			seconds_played[position] = (datetime.now() - timer_list[position]).seconds
+			print str(position) + ":" + str(seconds_played[position])
+			timer_list[position] = None
+			show_timer(start_timer)
+
+		def stop_all(timer_list, label_list, start_timer):
+			pass
+
+		def start_all(timer_list, label_list, start_timer):
+			pass
+
+		def start_player_timer(position, timer_list, label_list, start_timer):
+			print str(position) + ":" + str(seconds_played[position])
+			if seconds_played[position] == 0:
+				timer_list[position] = datetime.now()
+			else:
+				timer_list[position] = datetime.now() - timedelta(seconds=seconds_played[position])
+			show_timer(start_timer)
+
+		def end_and_record(root, start_timer, csv_first_names, csv_last_names, mins_played):
+			show_timer(start_timer)
+			f = open("import_files/UCLA.csv", 'w')
+			try:
+				writer = csv.writer(f)
+				for i in range(len(csv_first_names)):
+					# print csv_first_names[i] + ", " + csv_last_names[i] + ", " + str(mins_played[i] % 60)
+					writer.writerow((csv_first_names[i], csv_last_names[i], mins_played[i] / 60))
+		 	finally:
+		 		f.close()
+			
+
+			root.destroy()
+			
+
+		start_timer = datetime.now()
+		player_start_times = []
+		player_timers = []
+		seconds_played = []
+		csv_first_names = []
+		csv_last_names = []
+
 		for i in range(len(first_names)):
 			if first_names[i].get() != "":
 				first_label = Label(curr_root, text=first_names[i].get())
 				last_label = Label(curr_root, text = last_names[i].get())
 				first_label.grid(row = 1+i, column = 1, sticky = W)
 				last_label.grid(row = 1+i, column = 2, sticky = W)
-				player_timer = Label(curr_root, text = "00:00:00")
-				player_timer.grid(row = 1+i, column = 5, sticky = E)
-				pause_button = Button(curr_root, text = "pause", command=lambda timer=player_timer: pause_timer(timer), bg= "blue")
+
+				player_timer = Label(curr_root, text = "0 mins 0 secs.")
+				player_timer.grid(row = 1+i, column = 5)
+				player_timers.append(player_timer)
+
+				pause_button = Button(curr_root, text = "Stop", command=lambda position=i: stop_timer(position, player_start_times, player_timers, start_timer), bg= "blue")
 				pause_button.grid(row = 1+i, column = 3, sticky = W)
-				resume_button = Button(curr_root, text = "resume", command=lambda timer=player_timer: resume_timer(timer), bg= "blue")
+				resume_button = Button(curr_root, text = "Start", command=lambda position=i: start_player_timer(position, player_start_times, player_timers, start_timer), bg= "blue")
 				resume_button.grid(row = 1+i, column = 4, sticky = W)
+
+				seconds_played.append(0)
+				if i < 15:
+					player_start_times.append(start_timer)
+				else:
+					player_start_times.append(None)
+
+				csv_first_names.append(first_names[i].get())
+				csv_last_names.append(last_names[i].get())
 
 			else:
 				position_labels[i].destroy()
+
 			first_names[i].destroy()
 			last_names[i].destroy()
+			
 
 		b1.destroy()
 		pos_label.destroy()
 		main_last_label.destroy()
 		main_first_label.destroy()
 
-		start_button = Button(curr_root, text="Start")
-		start_button.grid(row = i + 2)
-
 		exit_button.destroy()
 		#quit button
-		new_exit_button = Button(curr_root, text="Go back", command=lambda root=curr_root: go_home(root), bg= "blue")
+		new_exit_button = Button(curr_root, text="End and record", command=lambda root=curr_root: end_and_record(root, start_timer, csv_first_names, csv_last_names, seconds_played), bg= "blue")
 		new_exit_button.grid(sticky=S+E, column = 5) 
 
-	def pause_timer():
-		pass
+		time_elapsed = Label(curr_root, text="0 mins 0 secs.")
+		time_elapsed.grid(row = i+3, column = 2)
 
-	def resume_timer()
-		pass
+		start_button = Button(curr_root, text="Update Elapsed Time",  command=lambda root=curr_root: show_timer(start_timer))
+		start_button.grid(row = i + 3)
+
+		def show_timer(start_timer):
+			seconds = (datetime.now() - start_timer).seconds % 60
+			minutes = (datetime.now() - start_timer).seconds / 60
+			time_string = str(minutes) + " mins " + str(seconds) + " secs."
+			time_elapsed.config(text = time_string)
+			for i in range(len(player_start_times)):
+				if player_start_times[i] is not None:
+					seconds = (datetime.now() - player_start_times[i]).seconds % 60
+					minutes = (datetime.now() - player_start_times[i]).seconds / 60
+					time_string = str(minutes) + " mins " + str(seconds) + " secs. (Playing)"
+					player_timers[i].config(text = time_string)
+					seconds_played[i] = (datetime.now() - player_start_times[i]).seconds
+
+		curr_root.mainloop()
+
 
 
 ##############################################################################################################################
